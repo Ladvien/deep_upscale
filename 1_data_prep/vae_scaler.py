@@ -52,14 +52,16 @@ rich_image_size         = (rich_image_shape[0], rich_image_shape[1]) # DOH! imag
 train_test_ratio        = 0.2
 
 # Hyperparameters
-batch_size              = 8
-epochs                  = 10
+batch_size              = 2
+epochs                  = 30
 steps_per_epoch         = 300
 validation_steps        = 50 
 optimizer               = 'adam' 
 learning_rate           = 0.001
 val_save_step_num       = 1
-dropout                 = 0.2
+dropout                 = 0.01
+
+random_rotation_degrees = (-90, 90)
 
 path_to_graphs          = f'{root_path}/data/output/logs/'
 model_save_dir          = f'{root_path}/data/output/'
@@ -99,17 +101,42 @@ def make_dir(dir_path):
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     
+def add_margins(image, image_size, random_rotation_degrees, color = (255, 255, 255)):
+  
+  # Get margin size.
+  margin = image_size
 
-def show_final_history(history):
-    fig, ax = plt.subplots(1, 2, figsize=(15,5))
-    ax[0].set_title('loss')
-    ax[0].plot(history.epoch, history.history['loss'], label='Train loss')
-    ax[0].plot(history.epoch, history.history['val_loss'], label='Validation loss')
-    ax[1].set_title('acc')
-    ax[1].plot(history.epoch, history.history['acc'], label='Train acc')
-    ax[1].plot(history.epoch, history.history['val_acc'], label='Validation acc')
-    ax[0].legend()
-    ax[1].legend()
+  # Rotation
+  rotation = randint(random_rotation_degrees[0], random_rotation_degrees[1])
+
+  # Create a bigger image.
+  tmp_img = Image.new("RGB", 
+                      (image_size + margin, image_size + margin), 
+                      color = color
+  )
+
+  # Paste the old image in the center
+  cords = (
+           round((tmp_img.size[0]-image.size[0])/2),
+           round((tmp_img.size[1]-image.size[1])/2)
+  )
+  tmp_img.paste(image, cords)
+
+  # Rotate the image.
+  tmp_img = tmp_img.rotate(rotation)
+
+  # Crop the image.
+  crop_quarter_size = round(image_size / 2)
+  crop_dims = (crop_quarter_size, 
+               crop_quarter_size, 
+               tmp_img.size[0] - crop_quarter_size, # Width - margin.
+               tmp_img.size[1] - crop_quarter_size) # Height - margin
+  tmp_img = tmp_img.crop(crop_dims)
+
+  if len(color) > 1:
+    tmp_img = tmp_img.convert("1")
+
+  return tmp_img
     
 #################################
 # Create needed dirs
@@ -145,12 +172,30 @@ def vae_model(opt, input_shape, dropout = 0.0):
     model.add(tf.keras.layers.Conv2D(128, (3, 3), input_shape = input_shape, padding="same"))
     model.add(tf.keras.layers.Activation('relu'))
     model.add(tf.keras.layers.Dropout(dropout))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    # model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
     
-    model.add(tf.keras.layers.Conv2D(64, (3, 3), padding="same"))
+    model.add(tf.keras.layers.Conv2D(128, (3, 3), padding="same"))
+    model.add(tf.keras.layers.Activation('relu'))
+    model.add(tf.keras.layers.Dropout(dropout))
+    # model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    
+    model.add(tf.keras.layers.Conv2D(256, (3, 3), padding="same"))
+    model.add(tf.keras.layers.Activation('relu'))
+    model.add(tf.keras.layers.Dropout(dropout))
+    
+    model.add(tf.keras.layers.Conv2D(256, (3, 3), padding="same"))
+    model.add(tf.keras.layers.Activation('relu'))
+    model.add(tf.keras.layers.Dropout(dropout))
+    
+    model.add(tf.keras.layers.Conv2D(128, (3, 3), padding="same"))
     model.add(tf.keras.layers.Activation('relu'))
     model.add(tf.keras.layers.Dropout(dropout))
     model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    
+    # model.add(tf.keras.layers.Conv2D(128, (3, 3), padding="same"))
+    # model.add(tf.keras.layers.Activation('relu'))
+    # model.add(tf.keras.layers.Dropout(dropout))
+    # model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
     
     
     # Decoder
@@ -158,11 +203,11 @@ def vae_model(opt, input_shape, dropout = 0.0):
     model.add(tf.keras.layers.Activation('relu'))
     model.add(tf.keras.layers.Dropout(dropout))
     model.add(tf.keras.layers.UpSampling2D((2, 2)))
-    
-    model.add(tf.keras.layers.Conv2D(128, (3, 3), padding="same"))
-    model.add(tf.keras.layers.Activation('relu'))
-    model.add(tf.keras.layers.Dropout(dropout))
-    model.add(tf.keras.layers.UpSampling2D((2, 2)))
+
+    # model.add(tf.keras.layers.Conv2D(128, (3, 3), padding="same"))
+    # model.add(tf.keras.layers.Activation('relu'))
+    # model.add(tf.keras.layers.Dropout(dropout))
+    # model.add(tf.keras.layers.UpSampling2D((2, 2)))
     
     # model.add(tf.keras.layers.Conv2D(256, (3, 3), padding="same"))
     # model.add(tf.keras.layers.Activation('relu'))
@@ -231,7 +276,7 @@ def get_batch(file_paths, batch_size, verbose = 0):
         
         # Create matching file paths.
         rich_image_file_path = file_paths[file_nums_to_load[i]]
-        poor_image_file_path = file_paths[file_nums_to_load[i]].replace("rich", "poor")
+        poor_image_file_path = file_paths[file_nums_to_load[i]].replace("/rich", "/poor")
         if verbose > 0:
             print(f"Loading rich file: {rich_image_file_path}")
             print(f"Loading poor file: {poor_image_file_path}")
@@ -291,7 +336,7 @@ print('Weights Saved')
 #################################
 
 train_data_path = train_dir + "poor/"
-input_path = "/home/ladvien/Desktop/da_output_samps/rare-dragon-58/"
+input_path = "/home/ladvien/deep_arcane/images/1_training/magic_symbols_128x128/train"
 
 def denoise_random_images_in_folder(path, batch_size, ground_truth_available = True):
     poor_file_paths = iu.get_image_files_recursively(path)
