@@ -6,11 +6,6 @@ Created on Mon Nov 23 06:37:35 2020
 @author: ladvien
 """
 
-"""
-Downlaod Font-Awesome
-git clone https://github.com/encharm/Font-Awesome-SVG-PNG
-"""
-
 ################
 # Pre Execution
 ################
@@ -73,9 +68,9 @@ num_pepper              = 5
 specks_per_pepper       = 4
 group_range             = 3
 
-just_sample             = True
+just_sample             = False
 
-setup_data              = True
+setup_data              = False
 
 
 ###############
@@ -132,7 +127,6 @@ def prepend_category_name_to_files(category_name: str, directory: str, input_pat
         os.system(f"mv {target_path} {dest_path}")
 
 if setup_data:
-
     prepend_category_name_to_files("font_awesome", font_awesome_dir, input_path)
     prepend_category_name_to_files("bootstrap_dir", bootstrap_dir, input_path)
     prepend_category_name_to_files("feather_dir", feather_dir, input_path)
@@ -140,16 +134,6 @@ if setup_data:
     prepend_category_name_to_files("hero_outline_dir", hero_outline_dir, input_path)
     prepend_category_name_to_files("ionicons_dir", ionicons_dir, input_path)
     prepend_category_name_to_files("bootstrap_dir", bootstrap_dir, input_path)
-
-    # os.system(f"cp {font_awesome_dir}*.svg {input_path}")
-    # os.system(f"cp {bootstrap_dir}*.svg {input_path} ")
-    # os.system(f"cp {feather_dir}*.svg {input_path} ")
-    # os.system(f"cp {hero_solid_dir}*.svg {input_path} ")
-    # os.system(f"cp {hero_outline_dir}*.svg {input_path} ")
-    # os.system(f"cp {ionicons_dir}*.svg {input_path}")
-    
-    # os.chdir(f"{project_path}")
-
 
 ###################
 # Helper Functions
