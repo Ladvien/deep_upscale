@@ -1,0 +1,22 @@
+{
+    "os": "Linux-5.4.0-88-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2021-10-16T20:12:29.799722",
+    "startedAt": "2021-10-16T20:12:28.483836",
+    "docker": null,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "vae_scaler.py",
+    "codePath": "vae_scaler.py",
+    "git": {
+        "remote": "git@github.com:Ladvien/deep_upscale.git",
+        "commit": "147c7b88e9de2359432859c987127fd2ba3ce82d"
+    },
+    "email": "honeysucklehardware@gmail.com",
+    "root": "/home/ladvien/deep_upscale",
+    "host": "43",
+    "username": "ladvien",
+    "executable": "/usr/bin/python3"
+}

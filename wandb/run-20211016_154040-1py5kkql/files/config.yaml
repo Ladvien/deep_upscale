@@ -1,0 +1,73 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.12.4
+    framework: keras
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.8.10
+    start_time: 1634416840
+    t:
+      1:
+      - 2
+      - 3
+      2:
+      - 2
+      - 3
+      3:
+      - 16
+      4: 3.8.10
+      5: 0.12.4
+      8:
+      - 5
+batch_size:
+  desc: null
+  value: 2
+dropout:
+  desc: null
+  value: 0.01
+epochs:
+  desc: null
+  value: 30
+learning_rate:
+  desc: null
+  value: 0.001
+optimizer:
+  desc: null
+  value: adam
+poor_image_shape:
+  desc: null
+  value:
+  - 128
+  - 128
+  - 1
+poor_image_size:
+  desc: null
+  value:
+  - 128
+  - 128
+rich_image_shape:
+  desc: null
+  value:
+  - 128
+  - 128
+  - 1
+rich_image_size:
+  desc: null
+  value:
+  - 128
+  - 128
+steps_per_epoch:
+  desc: null
+  value: 300
+train_test_ratio:
+  desc: null
+  value: 0.2
+val_save_step_num:
+  desc: null
+  value: 1
+validation_steps:
+  desc: null
+  value: 50
