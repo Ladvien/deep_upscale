@@ -29,7 +29,7 @@ from PIL import Image
 from random import randint
 import cv2
 
-from libs.img_mods import add_noise
+from libs.img_mods import add_noise, invert_mostly_black_images
 from libs.img_utils import ImageUtils
 
 import matplotlib.pyplot as plt
@@ -52,6 +52,10 @@ output_path = f"{root_path}/deep_upscale/images/"
 poor_images_path = f"{output_path}poor/"
 rich_images_path = f"{output_path}rich/"
 
+just_sample = True
+setup_data = True
+
+
 poor_width = 128
 poor_height = 128
 poor_dims = (poor_width, poor_height)
@@ -73,9 +77,6 @@ num_pepper = 5
 specks_per_pepper = 4
 group_range = 3
 
-just_sample = False
-
-setup_data = False
 
 
 ###############
@@ -135,13 +136,13 @@ if setup_data:
 #####################
 
 if setup_data:
-    prepend_category_name_to_files("font_awesome", font_awesome_dir, input_path)
-    prepend_category_name_to_files("bootstrap_dir", bootstrap_dir, input_path)
-    prepend_category_name_to_files("feather_dir", feather_dir, input_path)
-    prepend_category_name_to_files("hero_solid_dir", hero_solid_dir, input_path)
-    prepend_category_name_to_files("hero_outline_dir", hero_outline_dir, input_path)
-    prepend_category_name_to_files("ionicons_dir", ionicons_dir, input_path)
-    prepend_category_name_to_files("bootstrap_dir", bootstrap_dir, input_path)
+    img_utils.prepend_category_name_to_files("font_awesome", font_awesome_dir, input_path)
+    img_utils.prepend_category_name_to_files("bootstrap_dir", bootstrap_dir, input_path)
+    img_utils.prepend_category_name_to_files("feather_dir", feather_dir, input_path)
+    img_utils.prepend_category_name_to_files("hero_solid_dir", hero_solid_dir, input_path)
+    img_utils.prepend_category_name_to_files("hero_outline_dir", hero_outline_dir, input_path)
+    img_utils.prepend_category_name_to_files("ionicons_dir", ionicons_dir, input_path)
+    img_utils.prepend_category_name_to_files("bootstrap_dir", bootstrap_dir, input_path)
 
 
 img_utils.make_dir(poor_images_path)

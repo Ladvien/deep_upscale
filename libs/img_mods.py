@@ -2,6 +2,7 @@ from random import randint
 from libs.img_utils import ImageUtils
 import cv2
 from PIL import Image
+import numpy as np
 
 img_utils = ImageUtils()
 
@@ -62,6 +63,11 @@ def convert_image_to_bw(image, threshold):
 
 
 def invert_mostly_black_images(image, threshold):
+
+    try:
+        image = img_utils.convert_pil2cv2(image)
+    except Exception as e:
+        print(e)
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
